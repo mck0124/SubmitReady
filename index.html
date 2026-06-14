@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SubmitReady - Free Local Image, PDF, and File Submission Tools</title>
+    <meta
+      name="description"
+      content="SubmitReady helps you resize images, convert JPG and PNG files to PDF, crop photos, mask private details, merge PDFs, and rename files locally in your browser."
+    />
+    <meta
+      name="keywords"
+      content="image optimizer, JPG compressor, PNG converter, image to PDF, PDF merge, PDF split, photo cropper, privacy mask, batch file rename, submission file tools"
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="author" content="SubmitReady" />
+    <meta name="theme-color" content="#1769e0" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SubmitReady" />
+    <meta property="og:title" content="SubmitReady - Local Submission File Tools" />
+    <meta
+      property="og:description"
+      content="Prepare upload-ready images, PDFs, screenshots, and file sets with privacy-first tools that run in your browser."
+    />
+    <meta property="og:image" content="assets/submitready-icon.png" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="SubmitReady - Local Submission File Tools" />
+    <meta
+      name="twitter:description"
+      content="Resize images, convert image files to PDF, merge PDFs, crop photos, mask screenshots, and batch rename files without uploading them."
+    />
+    <script>
+      (() => {
+        try {
+          const savedTheme = localStorage.getItem("submitready-theme");
+          document.documentElement.dataset.theme = savedTheme || "light";
+        } catch {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+    <link rel="icon" href="assets/submitready-icon.png" />
+    <link rel="apple-touch-icon" href="assets/submitready-icon.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "SubmitReady",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "description": "SubmitReady is a privacy-first browser tool for preparing images, PDFs, screenshots, and renamed file sets for online submission portals.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "Resize and compress JPG and PNG images",
+          "Convert JPG and PNG images to PDF",
+          "Merge, split, and rebuild PDF files",
+          "Crop profile and ID photos",
+          "Mask private screenshot details",
+          "Batch rename files and download a ZIP"
+        ],
+        "privacyPolicy": "#privacy"
+      }
+    </script>
+  </head>
+  <body>
+    <nav class="top-nav" aria-label="Primary navigation">
+      <a class="nav-brand" href="#imageOptimizer">
+        <img src="assets/submitready-wordmark.png" alt="SubmitReady" />
+      </a>
+      <div class="nav-links" aria-label="Feature navigation">
+        <a href="#imageOptimizer" aria-current="page">Image Optimizer</a>
+        <a href="#pdfConverter">JPG/PNG to PDF</a>
+        <a href="#pdfTools">PDF Tools</a>
+        <a href="#photoCropper">Photo Cropper</a>
+        <a href="#privacyBlur">Privacy Mask</a>
+        <a href="#batchRename">Batch Rename</a>
+      </div>
+      <button type="button" id="themeToggle" class="theme-toggle" aria-pressed="false">
+        <span id="themeLabel">Dark mode</span>
+      </button>
+    </nav>
+
+    <header class="app-header">
+      <div>
+        <p id="pageEyebrow" class="eyebrow">Local image optimizer</p>
+        <p id="pageHeaderCopy" class="header-copy">
+          Prepare images for portals that require a specific format, file size, or maximum dimensions.
+        </p>
+      </div>
+      <div class="privacy-pill">Files stay on this device</div>
+    </header>
+
+    <main class="app-shell">
+      <section id="imageOptimizer" class="workspace" aria-label="Image optimization workspace">
+        <div id="uploadPanel" class="panel upload-panel">
+          <div
+            id="dropZone"
+            class="drop-zone"
+            role="group"
+            aria-label="Upload JPG or PNG image"
+          >
+            <input id="fileInput" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" hidden />
+            <div class="drop-zone-inner">
+              <img class="upload-icon" src="assets/submitready-icon.png" alt="" />
+              <div>
+                <h2>Upload one image</h2>
+                <p>Drag a JPG or PNG here, or choose a file from your device.</p>
+              </div>
+              <button type="button" id="chooseFileButton" class="secondary-button">Choose file</button>
+            </div>
+            <div id="uploadPreviewState" class="upload-preview-state" hidden>
+              <img id="uploadPreview" alt="Selected image preview" />
+              <div class="upload-preview-bar">
+                <div>
+                  <strong>Selected image</strong>
+                  <span>Ready to optimize</span>
+                </div>
+                <button type="button" id="changeFileButton" class="secondary-button">Change file</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="fileState" class="file-state" hidden>
+            <div>
+              <strong id="selectedFileName">No file selected</strong>
+              <span id="selectedFileSize"></span>
+            </div>
+            <button type="button" id="clearFileButton" class="text-button">Clear</button>
+          </div>
+
+          <p id="errorMessage" class="message error" role="alert" hidden></p>
+          <p id="statusMessage" class="message status" role="status" hidden></p>
+        </div>
+
+        <form id="requirementsForm" class="panel settings-panel" novalidate>
+          <div class="section-heading">
+            <p class="eyebrow">Requirements</p>
+            <h2>Set upload rules</h2>
+          </div>
+
+          <fieldset class="preset-grid">
+            <legend>Requirement presets</legend>
+            <label>
+              <input type="radio" name="preset" value="profile" />
+              <span>Profile Photo</span>
+            </label>
+            <label>
+              <input type="radio" name="preset" value="university" checked />
+              <span>University Portal</span>
+            </label>
+            <label>
+              <input type="radio" name="preset" value="visa" />
+              <span>Visa / Government</span>
+            </label>
+            <label>
+              <input type="radio" name="preset" value="email" />
+              <span>Email Attachment</span>
+            </label>
+            <label>
+              <input type="radio" name="preset" value="custom" />
+              <span>Custom</span>
+            </label>
+          </fieldset>
+
+          <div class="form-grid">
+            <label class="field">
+              <span>Output format</span>
+              <select id="outputFormat" name="outputFormat">
+                <option value="jpg">JPG</option>
+                <option value="png">PNG</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Maximum file size</span>
+              <div class="compound-field">
+                <input id="maxFileSize" name="maxFileSize" type="number" min="1" step="1" required />
+                <select id="fileSizeUnit" name="fileSizeUnit" aria-label="File size unit">
+                  <option value="KB">KB</option>
+                  <option value="MB">MB</option>
+                </select>
+              </div>
+            </label>
+
+            <label class="field">
+              <span>Maximum width</span>
+              <div class="suffix-field">
+                <input id="maxWidth" name="maxWidth" type="number" min="1" step="1" required />
+                <span>px</span>
+              </div>
+            </label>
+
+            <label class="field">
+              <span>Maximum height</span>
+              <div class="suffix-field">
+                <input id="maxHeight" name="maxHeight" type="number" min="1" step="1" required />
+                <span>px</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="quality-row">
+            <label class="toggle-field">
+              <input id="autoQuality" type="checkbox" checked />
+              <span>Auto quality</span>
+            </label>
+            <label class="field quality-field">
+              <span>Manual quality <strong id="qualityValue">90%</strong></span>
+              <input id="qualitySlider" type="range" min="10" max="100" value="90" disabled />
+            </label>
+          </div>
+
+          <button id="optimizeButton" type="submit" class="primary-button" disabled>Optimize file</button>
+        </form>
+      </section>
+
+      <section id="compare" class="results-section" aria-label="File information and previews" hidden>
+        <div class="results-header">
+          <div>
+            <p class="eyebrow">Compare</p>
+            <h2>Before and after</h2>
+          </div>
+          <button type="button" id="startOverButton" class="secondary-button light-button">Start over</button>
+        </div>
+
+        <div class="results-grid">
+        <article class="panel info-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Before</p>
+            <h2>Original file</h2>
+          </div>
+          <dl id="originalInfo" class="info-list">
+            <div><dt>File name</dt><dd>-</dd></div>
+            <div><dt>File type</dt><dd>-</dd></div>
+            <div><dt>File size</dt><dd>-</dd></div>
+            <div><dt>Dimensions</dt><dd>-</dd></div>
+            <div><dt>Aspect ratio</dt><dd>-</dd></div>
+          </dl>
+          <div class="preview-frame">
+            <img id="originalPreview" alt="Original image preview" hidden />
+            <span id="originalPlaceholder">Original preview appears here</span>
+          </div>
+        </article>
+
+        <article class="panel info-panel">
+          <div class="section-heading">
+            <p class="eyebrow">After</p>
+            <h2>Optimized file</h2>
+          </div>
+          <dl id="optimizedInfo" class="info-list">
+            <div><dt>File name</dt><dd>-</dd></div>
+            <div><dt>Output type</dt><dd>-</dd></div>
+            <div><dt>File size</dt><dd>-</dd></div>
+            <div><dt>Dimensions</dt><dd>-</dd></div>
+            <div><dt>Reduction</dt><dd>-</dd></div>
+          </dl>
+          <div class="preview-frame">
+            <img id="optimizedPreview" alt="Optimized image preview" hidden />
+            <span id="optimizedPlaceholder">Optimized preview appears here</span>
+          </div>
+          <p id="warningMessage" class="message warning" role="status" hidden></p>
+          <a id="downloadButton" class="primary-button download-button disabled" aria-disabled="true">Download optimized file</a>
+        </article>
+        </div>
+      </section>
+
+      <section id="privacyNotice" class="notice-panel privacy-page" aria-label="Privacy notice">
+        <strong>Privacy notice</strong>
+        <p>Your files are processed locally in your browser. Images and PDFs are not uploaded or stored on any server.</p>
+      </section>
+
+      <section id="homeContent" class="content-page home-content" aria-label="SubmitReady service information">
+        <article class="content-panel">
+          <p class="eyebrow">About SubmitReady</p>
+          <h2>Submission file tools that run in your browser</h2>
+          <p>
+            SubmitReady is a free static web application for people who need to prepare files for university portals,
+            job applications, visa forms, customer support tickets, document uploads, and other online submission systems.
+            Many portals reject files when the format, dimensions, page order, file name, or size does not match their
+            requirements. This site brings common preparation steps into one browser-based workspace.
+          </p>
+          <p>
+            The service is designed for quick file preparation without an account, backend upload, or cloud storage
+            workflow. Most actions happen locally on your device through standard browser APIs, so you can inspect the
+            result and download a new file before uploading it to the destination website yourself.
+          </p>
+          <div class="content-actions">
+            <a class="secondary-button light-button" href="#features">View all features</a>
+            <a class="secondary-button light-button" href="#privacy">Read privacy policy</a>
+          </div>
+        </article>
+
+        <article class="content-panel">
+          <p class="eyebrow">Feature overview</p>
+          <h2>Tools included in this static service</h2>
+          <div class="feature-list">
+            <div>
+              <strong>Image optimizer</strong>
+              <p>Resize, convert, and compress JPG or PNG images for file-size and dimension limits.</p>
+            </div>
+            <div>
+              <strong>JPG/PNG to PDF</strong>
+              <p>Combine image files into one PDF for uploads that require a document instead of separate images.</p>
+            </div>
+            <div>
+              <strong>PDF tools</strong>
+              <p>Merge multiple PDFs, extract selected pages, or rebuild a PDF structure in the browser.</p>
+            </div>
+            <div>
+              <strong>Photo cropper</strong>
+              <p>Create square, profile, ID, and custom-sized crops with a downloadable image output.</p>
+            </div>
+            <div>
+              <strong>Privacy mask</strong>
+              <p>Cover, pixelate, or blur selected screenshot areas before sharing or submitting a file.</p>
+            </div>
+            <div>
+              <strong>Batch rename</strong>
+              <p>Rename groups of files into a consistent sequence and download them as a ZIP package.</p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section id="about" class="content-page route-page" aria-labelledby="aboutTitle" hidden>
+        <article class="content-panel">
+          <p class="eyebrow">Site introduction</p>
+          <h2 id="aboutTitle">About SubmitReady</h2>
+          <p>
+            SubmitReady helps users prepare upload-ready files before submitting them to third-party portals. The site
+            focuses on common pre-submission work: reducing image size, converting image formats, creating PDFs from
+            images, arranging PDF pages, cropping photos to exact dimensions, hiding sensitive screenshot information,
+            and creating clean file names for grouped submissions.
+          </p>
+          <p>
+            The application is intentionally static. It is built with HTML, CSS, and JavaScript and can be deployed on
+            static hosting such as Cloudflare Pages. There is no account system, user dashboard, or server-side file
+            processing layer in the current version. This keeps the service simple to maintain and easy to expand with
+            additional client-side tools.
+          </p>
+          <p>
+            SubmitReady is not affiliated with universities, immigration agencies, employers, cloud storage providers,
+            or document portals. Users are responsible for checking the final requirements of the destination service
+            before uploading their files.
+          </p>
+        </article>
+      </section>
+
+      <section id="features" class="content-page route-page" aria-labelledby="featuresTitle" hidden>
+        <article class="content-panel">
+          <p class="eyebrow">Feature introduction</p>
+          <h2 id="featuresTitle">What you can prepare with SubmitReady</h2>
+          <p>
+            SubmitReady provides practical browser tools for routine file preparation. The image optimizer supports
+            JPG and PNG input, output format selection, maximum file size targets, maximum width and height settings,
+            automatic quality adjustment, preview comparison, and download of the optimized result.
+          </p>
+          <p>
+            PDF-related tools cover several common workflows. You can turn multiple JPG or PNG images into a single PDF,
+            merge PDF files in a chosen order, extract selected page ranges from one PDF, or rebuild a PDF when browser
+            processing can reduce structural overhead. These tools are useful for scanned forms, receipt bundles,
+            assignment pages, and document packets.
+          </p>
+          <p>
+            The photo cropper and privacy mask are designed for visual submissions. The cropper helps produce consistent
+            profile, ID, social, or custom dimensions. The privacy mask lets you manually mark sensitive screenshot
+            regions and export a safer image. The batch rename tool helps organize multiple files with a shared prefix,
+            padded numbering, extension cleanup, and ZIP download.
+          </p>
+        </article>
+      </section>
+
+      <section id="privacy" class="content-page route-page" aria-labelledby="privacyTitle" hidden>
+        <article class="content-panel legal-content">
+          <p class="eyebrow">Privacy policy</p>
+          <h2 id="privacyTitle">Privacy Policy for SubmitReady</h2>
+          <p><strong>Effective date:</strong> June 14, 2026</p>
+          <p>
+            SubmitReady is designed as a privacy-first static web application. The core file tools run in your browser
+            and do not require you to create an account or send your selected files to a SubmitReady server.
+          </p>
+          <h3>Files you choose</h3>
+          <p>
+            When you select images, PDFs, screenshots, or other files, the files are read by your browser so the selected
+            tool can create a converted, optimized, cropped, masked, merged, split, rebuilt, renamed, or zipped output.
+            The current site does not upload, store, sell, or share those selected files.
+          </p>
+          <h3>Local browser data</h3>
+          <p>
+            SubmitReady may store a small theme preference, such as light mode or dark mode, in your browser local
+            storage. This preference is used only to keep the interface consistent when you return.
+          </p>
+          <h3>Advertising and analytics</h3>
+          <p>
+            This site may apply for advertising services such as Google AdSense in the future. Third-party vendors,
+            including Google, may use cookies to serve ads based on a user's prior visits to SubmitReady or other
+            websites. Google's use of advertising cookies enables Google and its partners to serve ads based on visits
+            to this site and other sites on the internet.
+          </p>
+          <p>
+            Users may opt out of personalized advertising by visiting
+            <a href="https://www.google.com/settings/ads" rel="noopener noreferrer">Google's Ads Settings</a>. Users can
+            also visit <a href="https://www.aboutads.info/" rel="noopener noreferrer">aboutads.info</a> to learn about
+            opting out of some third-party vendors' use of cookies for personalized advertising. If additional ad
+            networks, analytics tools, or consent tools are added, this policy should be updated with the relevant
+            provider details before production use.
+          </p>
+          <h3>Contact and removal requests</h3>
+          <p>
+            Because SubmitReady does not maintain user accounts or server-side file storage in the current version,
+            there is no hosted user file database to delete. If a public contact address is added later, it should be
+            listed here for privacy questions, correction requests, and advertising compliance inquiries.
+          </p>
+          <h3>Changes to this policy</h3>
+          <p>
+            This policy may be updated as new features are added. Material changes should be reflected on this page with
+            a new effective date.
+          </p>
+        </article>
+      </section>
+
+      <section id="pdfConverter" class="tool-page" aria-labelledby="pdfConverterTitle" hidden>
+      <div class="panel converter-section">
+        <div class="tool-page-header">
+          <div class="section-heading">
+            <p class="eyebrow">PDF converter</p>
+            <h2 id="pdfConverterTitle">JPG / PNG to PDF</h2>
+          </div>
+          <button type="button" id="closePdfConverterButton" class="secondary-button light-button">Back to optimizer</button>
+        </div>
+        <div id="pdfDropZone" class="pdf-drop-zone" role="group" aria-label="Upload images to convert to PDF">
+          <input id="pdfFileInput" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" multiple hidden />
+          <img class="upload-icon" src="assets/submitready-icon.png" alt="" />
+          <div>
+            <h2>Create a PDF from images</h2>
+            <p>Drag JPG or PNG files here, then download one PDF.</p>
+          </div>
+          <button type="button" id="choosePdfFilesButton" class="secondary-button">Choose images</button>
+        </div>
+
+        <div id="pdfFileList" class="pdf-file-list" hidden></div>
+        <p class="tool-note">Limit: up to 30 images, 25 MB per image, 120 MB total.</p>
+        <p id="pdfErrorMessage" class="message error" role="alert" hidden></p>
+        <p id="pdfStatusMessage" class="message status" role="status" hidden></p>
+        <div class="converter-actions">
+          <button type="button" id="clearPdfFilesButton" class="secondary-button light-button" disabled>Clear</button>
+          <button type="button" id="createPdfButton" class="primary-button" disabled>Create PDF</button>
+          <button type="button" id="cancelPdfButton" class="secondary-button light-button" disabled>Cancel</button>
+          <a id="downloadPdfButton" class="primary-button download-button disabled" aria-disabled="true">Download PDF</a>
+        </div>
+      </div>
+      </section>
+
+      <section id="pdfTools" class="tool-page" aria-labelledby="pdfToolsTitle" hidden>
+      <div class="panel converter-section">
+        <div class="tool-page-header">
+          <div class="section-heading">
+            <p class="eyebrow">PDF tools</p>
+            <h2 id="pdfToolsTitle">Merge, split, or rebuild PDFs</h2>
+          </div>
+          <button type="button" id="closePdfToolsButton" class="secondary-button light-button">Back to optimizer</button>
+        </div>
+
+        <div class="tool-mode-grid" role="radiogroup" aria-label="PDF action">
+          <label>
+            <input type="radio" name="pdfToolMode" value="merge" checked />
+            <span>Merge PDFs</span>
+          </label>
+          <label>
+            <input type="radio" name="pdfToolMode" value="split" />
+            <span>Split pages</span>
+          </label>
+          <label>
+            <input type="radio" name="pdfToolMode" value="rebuild" />
+            <span>Rebuild PDF</span>
+          </label>
+        </div>
+
+        <div id="pdfToolsDropZone" class="pdf-drop-zone compact-drop-zone" role="group" aria-label="Upload PDF files">
+          <input id="pdfToolsFileInput" type="file" accept="application/pdf,.pdf" multiple hidden />
+          <img class="upload-icon" src="assets/submitready-icon.png" alt="" />
+          <div>
+            <h2>Add PDF files</h2>
+            <p>Drag PDFs here, then choose the action you need.</p>
+          </div>
+          <button type="button" id="choosePdfToolFilesButton" class="secondary-button">Choose PDFs</button>
+        </div>
+
+        <label class="field" id="pdfSplitField">
+          <span>Pages to extract</span>
+          <input id="pdfSplitRanges" type="text" value="1" placeholder="Example: 1-3, 5, 8-10" />
+        </label>
+
+        <div id="pdfToolsFileList" class="pdf-file-list" hidden></div>
+        <p class="tool-note">Limit: up to 20 PDFs, 80 MB per file, 160 MB total. Rebuild can reduce PDF structure overhead, but it does not recompress images or guarantee a smaller file.</p>
+        <p id="pdfToolsErrorMessage" class="message error" role="alert" hidden></p>
+        <p id="pdfToolsStatusMessage" class="message status" role="status" hidden></p>
+        <div class="converter-actions">
+          <button type="button" id="clearPdfToolFilesButton" class="secondary-button light-button" disabled>Clear</button>
+          <button type="button" id="runPdfToolButton" class="primary-button" disabled>Merge PDFs</button>
+          <button type="button" id="cancelPdfToolButton" class="secondary-button light-button" disabled>Cancel</button>
+          <a id="downloadPdfToolButton" class="primary-button download-button disabled" aria-disabled="true">Download PDF</a>
+        </div>
+      </div>
+      </section>
+
+      <section id="photoCropper" class="tool-page" aria-labelledby="cropperTitle" hidden>
+      <div class="panel converter-section wide-tool">
+        <div class="tool-page-header">
+          <div class="section-heading">
+            <p class="eyebrow">Photo cropper</p>
+            <h2 id="cropperTitle">Profile and ID photo cropper</h2>
+          </div>
+          <button type="button" id="closeCropperButton" class="secondary-button light-button">Back to optimizer</button>
+        </div>
+
+        <div class="tool-grid">
+          <div class="canvas-tool">
+            <canvas id="cropperCanvas" width="720" height="720" aria-label="Photo crop preview"></canvas>
+            <input id="cropperFileInput" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" hidden />
+            <button type="button" id="chooseCropperFileButton" class="secondary-button">Choose photo</button>
+          </div>
+
+          <div class="tool-controls">
+            <label class="field">
+              <span>Crop preset</span>
+              <select id="cropPreset">
+                <option value="id">ID photo 600 x 600</option>
+                <option value="linkedin">LinkedIn 400 x 400</option>
+                <option value="instagram">Instagram 1080 x 1080</option>
+                <option value="story">Story 1080 x 1920</option>
+                <option value="custom">Custom</option>
+              </select>
+            </label>
+            <div class="form-grid">
+              <label class="field">
+                <span>Width</span>
+                <div class="suffix-field">
+                  <input id="cropWidth" type="number" min="100" value="600" />
+                  <span>px</span>
+                </div>
+              </label>
+              <label class="field">
+                <span>Height</span>
+                <div class="suffix-field">
+                  <input id="cropHeight" type="number" min="100" value="600" />
+                  <span>px</span>
+                </div>
+              </label>
+            </div>
+            <label class="field">
+              <span>Zoom <strong id="cropZoomValue">100%</strong></span>
+              <input id="cropZoom" type="range" min="100" max="300" value="100" />
+            </label>
+            <label class="field">
+              <span>Output format</span>
+              <select id="cropFormat">
+                <option value="jpg">JPG</option>
+                <option value="png">PNG</option>
+              </select>
+            </label>
+            <p id="cropperStatusMessage" class="message status" role="status" hidden></p>
+            <p id="cropperErrorMessage" class="message error" role="alert" hidden></p>
+            <div class="converter-actions">
+              <button type="button" id="resetCropButton" class="secondary-button light-button" disabled>Reset crop</button>
+              <button type="button" id="downloadCropButton" class="primary-button" disabled>Download crop</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </section>
+
+      <section id="privacyBlur" class="tool-page" aria-labelledby="blurTitle" hidden>
+      <div class="panel converter-section wide-tool">
+        <div class="tool-page-header">
+          <div class="section-heading">
+            <p class="eyebrow">Privacy mask</p>
+            <h2 id="blurTitle">Hide sensitive screenshot details</h2>
+          </div>
+          <button type="button" id="closeBlurButton" class="secondary-button light-button">Back to optimizer</button>
+        </div>
+
+        <div class="tool-grid">
+          <div class="canvas-tool">
+            <canvas id="blurCanvas" width="900" height="620" aria-label="Screenshot blur editor"></canvas>
+            <input id="blurFileInput" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" hidden />
+            <button type="button" id="chooseBlurFileButton" class="secondary-button">Choose screenshot</button>
+          </div>
+
+          <div class="tool-controls">
+            <fieldset class="tool-mode-grid privacy-mode-grid" role="radiogroup" aria-label="Privacy mask mode">
+              <legend>Mask mode</legend>
+              <label>
+                <input type="radio" name="privacyMode" value="redact" checked />
+                <span>Redact</span>
+              </label>
+              <label>
+                <input type="radio" name="privacyMode" value="pixelate" />
+                <span>Pixelate</span>
+              </label>
+              <label>
+                <input type="radio" name="privacyMode" value="blur" />
+                <span>Blur</span>
+              </label>
+            </fieldset>
+            <label class="field" id="redactColorField">
+              <span>Redaction color</span>
+              <select id="redactColor">
+                <option value="#000000">Black</option>
+                <option value="#ffffff">White</option>
+                <option value="#17202a">Dark slate</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Effect strength <strong id="blurStrengthValue">14 px</strong></span>
+              <input id="blurStrength" type="range" min="4" max="30" value="14" />
+            </label>
+            <label class="field">
+              <span>Output format</span>
+              <select id="blurFormat">
+                <option value="png">PNG</option>
+                <option value="jpg">JPG</option>
+              </select>
+            </label>
+            <p class="tool-note">Redact is the safest default because it fully covers selected areas. Blur and pixelate are useful for previews but can leave recoverable detail.</p>
+            <p id="blurStatusMessage" class="message status" role="status" hidden></p>
+            <p id="blurErrorMessage" class="message error" role="alert" hidden></p>
+            <div class="converter-actions">
+              <button type="button" id="undoBlurButton" class="secondary-button light-button" disabled>Undo</button>
+              <button type="button" id="clearBlurButton" class="secondary-button light-button" disabled>Clear marks</button>
+              <button type="button" id="downloadBlurButton" class="primary-button" disabled>Download safe image</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </section>
+
+      <section id="batchRename" class="tool-page" aria-labelledby="renameTitle" hidden>
+      <div class="panel converter-section">
+        <div class="tool-page-header">
+          <div class="section-heading">
+            <p class="eyebrow">Batch rename</p>
+            <h2 id="renameTitle">Rename files into a clean ZIP</h2>
+          </div>
+          <button type="button" id="closeRenameButton" class="secondary-button light-button">Back to optimizer</button>
+        </div>
+
+        <div id="renameDropZone" class="pdf-drop-zone compact-drop-zone" role="group" aria-label="Upload files to rename">
+          <input id="renameFileInput" type="file" multiple hidden />
+          <img class="upload-icon" src="assets/submitready-icon.png" alt="" />
+          <div>
+            <h2>Add files</h2>
+            <p>Build a renamed ZIP for assignments, documents, and photo sets.</p>
+          </div>
+          <button type="button" id="chooseRenameFilesButton" class="secondary-button">Choose files</button>
+        </div>
+
+        <div class="form-grid">
+          <label class="field">
+            <span>Prefix</span>
+            <input id="renamePrefix" type="text" value="submission" />
+          </label>
+          <label class="field">
+            <span>Start number</span>
+            <input id="renameStart" type="number" min="0" value="1" />
+          </label>
+          <label class="field">
+            <span>Number padding</span>
+            <input id="renamePadding" type="number" min="1" max="6" value="2" />
+          </label>
+          <label class="field">
+            <span>Name style</span>
+            <select id="renameCase">
+              <option value="keep">Keep prefix case</option>
+              <option value="lower">lowercase</option>
+              <option value="upper">UPPERCASE</option>
+            </select>
+          </label>
+        </div>
+        <label class="toggle-field">
+          <input id="renameLowerExt" type="checkbox" checked />
+          <span>Lowercase file extensions</span>
+        </label>
+
+        <div id="renameFileList" class="rename-preview-list" hidden></div>
+        <p class="tool-note">Limit: up to 100 files, 120 MB per file, 300 MB total. ZIP creation stores files without compression.</p>
+        <p id="renameErrorMessage" class="message error" role="alert" hidden></p>
+        <p id="renameStatusMessage" class="message status" role="status" hidden></p>
+        <div class="converter-actions">
+          <button type="button" id="clearRenameFilesButton" class="secondary-button light-button" disabled>Clear</button>
+          <button type="button" id="downloadRenameZipButton" class="primary-button" disabled>Download ZIP</button>
+          <button type="button" id="cancelRenameZipButton" class="secondary-button light-button" disabled>Cancel</button>
+        </div>
+      </div>
+    </section>
+
+    </main>
+
+    <footer class="app-footer">
+      <span>SubmitReady</span>
+      <span class="footer-links">
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#privacy">Privacy Policy</a>
+      </span>
+    </footer>
+
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js" defer></script>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
