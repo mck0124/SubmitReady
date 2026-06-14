@@ -59,10 +59,14 @@ For Cloudflare Workers Static Assets, use:
 - Deploy command: `npx wrangler deploy`
 
 The build command copies the static site into `dist/`, and `wrangler.jsonc` points Cloudflare to that output directory.
+Set the Cloudflare build environment variable `SITE_URL` to the final public origin, for example
+`https://submitready.pages.dev` or your custom domain. The build script uses `SITE_URL` to generate canonical URLs,
+Open Graph URLs, `robots.txt`, and `sitemap.xml`.
 
 ## SEO and Deployment Notes
 
 - Update the public production domain before adding a sitemap with absolute URLs.
+- `sitemap.xml` and the deployed `robots.txt` file are generated during `npm run build`.
 - Keep the Privacy Policy link visible in the header or footer before applying for advertising review.
 - Review the Privacy Policy again before enabling Google AdSense, analytics, consent banners, or any other third-party scripts.
 
