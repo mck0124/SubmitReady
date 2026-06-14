@@ -23,6 +23,7 @@ SubmitReady is a browser-based image optimization tool that helps users prepare 
 - Open the JPG/PNG to PDF converter as its own page from the menu bar.
 - Open PDF tools, photo cropper, privacy mask, and batch rename as separate pages from the menu bar.
 - Read site introduction, feature overview, and privacy policy sections from the navigation and footer.
+- Provide static `about.html`, `features.html`, `privacy.html`, and `contact.html` pages for crawler-friendly policy and trust information.
 - Provide SEO metadata, social sharing metadata, structured data, and `robots.txt` for static hosting.
 - Switch between light mode and dark mode.
 - Process files locally in the browser without a backend.
@@ -52,7 +53,12 @@ PDF merge, split, and rebuild actions use `pdf-lib` loaded from a CDN. Rebuild c
 
 Serve the directory with any static server and open `index.html`.
 
-No build step is required for the MVP. The app is suitable for Cloudflare Pages as a plain static site.
+For Cloudflare Workers Static Assets, use:
+
+- Build command: `npm run build`
+- Deploy command: `npx wrangler deploy`
+
+The build command copies the static site into `dist/`, and `wrangler.jsonc` points Cloudflare to that output directory.
 
 ## SEO and Deployment Notes
 
@@ -63,3 +69,5 @@ No build step is required for the MVP. The app is suitable for Cloudflare Pages 
 ## Privacy
 
 Your files are processed locally in your browser. They are not uploaded or stored on any server.
+
+Contact: minchan0124@gmail.com
