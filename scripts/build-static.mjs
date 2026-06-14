@@ -47,9 +47,9 @@ const pages = [
   {
     file: "features.html",
     path: "/features.html",
-    title: "SubmitReady Features - Image, PDF, Privacy, Crop, and Rename Tools",
+    title: "SubmitReady Guide - Features, How to Use, FAQ, and File Tips",
     description:
-      "Review SubmitReady features including image optimization, image to PDF conversion, PDF merge and split, photo crop, privacy masking, and batch rename tools.",
+      "Read the SubmitReady guide with feature descriptions, how-to steps, frequently asked questions, and practical tips for preparing upload-ready files.",
     priority: "0.8",
   },
   {

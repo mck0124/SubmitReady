@@ -23,6 +23,7 @@ SubmitReady is a browser-based image optimization tool that helps users prepare 
 - Open the JPG/PNG to PDF converter as its own page from the menu bar.
 - Open PDF tools, photo cropper, privacy mask, and batch rename as separate pages from the menu bar.
 - Read site introduction, feature overview, and privacy policy sections from the navigation and footer.
+- Provide one guide page with feature descriptions, usage steps, frequently asked questions, common use cases, and file preparation tips.
 - Provide static `about.html`, `features.html`, `privacy.html`, and `contact.html` pages for crawler-friendly policy and trust information.
 - Provide SEO metadata, social sharing metadata, structured data, and `robots.txt` for static hosting.
 - Switch between light mode and dark mode.

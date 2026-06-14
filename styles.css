@@ -955,6 +955,41 @@ h2 {
   margin-top: 12px;
 }
 
+.step-list,
+.faq-list {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 20px;
+}
+
+.step-list {
+  padding-left: 24px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.step-list li::marker {
+  color: var(--accent-dark);
+  font-weight: 900;
+}
+
+.faq-list details {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--feature-bg);
+  padding: 14px;
+}
+
+.faq-list summary {
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 900;
+}
+
+.faq-list p {
+  margin-top: 10px;
+}
+
 .converter-section {
   display: grid;
   gap: 16px;
